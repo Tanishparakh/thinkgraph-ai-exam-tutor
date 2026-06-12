@@ -120,17 +120,19 @@ const examSchema = {
     test_type: { type: "string" },
     detected_question_type: { type: "string" },
     skill_tested: { type: "string" },
-    correct_answer: { type: "string" },
+    correct_answer: { type: "string", enum: ["A", "B", "C", "D"] },
     confidence: { type: "number" },
     main_point_or_rule: { type: "string" },
     step_by_step_solution: { type: "array", items: { type: "string" } },
     option_analysis: {
       type: "array",
+      minItems: 4,
+      maxItems: 4,
       items: {
         type: "object",
         required: ["option", "is_correct", "explanation"],
         properties: {
-          option: { type: "string" },
+          option: { type: "string", enum: ["A", "B", "C", "D"] },
           is_correct: { type: "boolean" },
           explanation: { type: "string" },
         },
@@ -164,7 +166,7 @@ const examSchema = {
             D: { type: "string" },
           },
         },
-        correct_answer: { type: "string" },
+        correct_answer: { type: "string", enum: ["A", "B", "C", "D"] },
         explanation: { type: "string" },
       },
     },
@@ -255,6 +257,23 @@ function normalizeSelection(value, allowed, fallback) {
   return allowed.includes(value) ? value : fallback;
 }
 
+function normalizePercentage(value) {
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue)) return 0;
+  const percentage = numericValue > 0 && numericValue <= 1
+    ? numericValue * 100
+    : numericValue;
+  return Math.round(Math.max(0, Math.min(100, percentage)));
+}
+
+function normalizeOption(value) {
+  const match = String(value || "")
+    .trim()
+    .toUpperCase()
+    .match(/\b([A-D])\b/);
+  return match?.[1] || "";
+}
+
 function validateLogicData(data) {
   if (!data || typeof data !== "object") throw new Error("Invalid logic response");
   if (!Array.isArray(data.premises)) throw new Error("Missing premises");
@@ -268,10 +287,7 @@ function validateLogicData(data) {
   if (!Array.isArray(data.graph_nodes) || !Array.isArray(data.graph_edges)) {
     throw new Error("Missing graph data");
   }
-  data.validity_score = Math.max(
-    0,
-    Math.min(100, Number(data.validity_score) || 0)
-  );
+  data.validity_score = normalizePercentage(data.validity_score);
   return data;
 }
 
@@ -296,12 +312,12 @@ function validateExamData(data, testType, studentAnswer) {
     throw new Error("Missing exam details");
   }
 
-  const correctAnswer = data.correct_answer.trim().toUpperCase();
+  const correctAnswer = normalizeOption(data.correct_answer);
   if (!VALID_ANSWERS.has(correctAnswer)) throw new Error("Invalid correct answer");
 
   const optionMap = new Map();
   data.option_analysis.forEach((item) => {
-    const option = String(item?.option || "").trim().toUpperCase();
+    const option = normalizeOption(item?.option);
     if (VALID_ANSWERS.has(option) && typeof item.explanation === "string") {
       optionMap.set(option, {
         option,
@@ -327,7 +343,7 @@ function validateExamData(data, testType, studentAnswer) {
 
   data.test_type = testType;
   data.correct_answer = correctAnswer;
-  data.confidence = Math.max(0, Math.min(100, Number(data.confidence) || 0));
+  data.confidence = normalizePercentage(data.confidence);
   data.option_analysis = ["A", "B", "C", "D"].map((option) =>
     optionMap.get(option)
   );
