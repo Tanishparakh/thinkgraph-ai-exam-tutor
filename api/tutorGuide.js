@@ -47,11 +47,11 @@ Accuracy rules:
 const PROFILES = {
   "Identifying Strengths": {
     strategy:
-      "Find the main conclusion and its supporting reasons. Test each option by asking whether it makes the conclusion more likely or closes an important gap.",
+      "Find the main conclusion and its supporting reasons. Test each option by asking whether it makes the conclusion more likely or closes an important gap. Prefer an additional direct benefit over a fact that merely shows the problem still exists.",
     mistakes:
-      "Choosing a merely related statement, repeating an existing reason, supporting background detail instead of the conclusion, or selecting an option that needs an extra assumption.",
+      "Choosing a merely related statement, repeating an existing reason, supporting background detail instead of the conclusion, or selecting evidence of poor performance that does not show the proposed activity will help.",
     explanation:
-      "State the conclusion first, identify the reasoning gap, then compare how directly each option adds support.",
+      "State the conclusion first, identify the reasoning gap, then compare how directly each option adds support. Calibration: if an argument says a student should continue drawing, evidence that creative skills benefit the student's future engineering goal directly strengthens it; a report saying the student is not studying hard enough does not show that drawing helps and may instead create a reason to stop.",
   },
   "Identifying Weaknesses": {
     strategy:
