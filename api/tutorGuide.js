@@ -44,8 +44,8 @@ const CATEGORY_DEFINITIONS = [
     domain: "Critical Reasoning",
     category: "Strengthen / Best Support",
     keywords: ["strengthen", "best support", "most supports", "more likely"],
-    strategy: "Find the conclusion, locate its weakest link, and choose the option that most directly makes the conclusion more likely.",
-    mistakes: "Choosing a topic-related statement, repeating existing evidence, or confirming the problem without supporting the proposed conclusion.",
+    strategy: "Find the conclusion, locate its weakest link, and choose the option that adds the strongest direct reason for accepting the conclusion. Prefer a clear new benefit tied to the person's goal over a weaker statement that merely resembles an existing reason.",
+    mistakes: "Choosing a topic-related statement, repeating existing evidence in different words, or confirming the problem without supporting the proposed conclusion. Calibration: when Aida argues that Tom should continue drawing, the strongest support is that creative skills benefit his engineering goal. Saying drawing itself takes concentration is weaker because it does not establish that keeping the hobby improves Tom's studying.",
     subskills: [
       "Strengthen with new evidence",
       "Choose the best support",
