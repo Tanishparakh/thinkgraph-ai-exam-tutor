@@ -1,5 +1,7 @@
 export const DEFAULT_TEST_TYPE = "Auto / General Thinking Skills";
 export const DEFAULT_QUESTION_TYPE = "Auto Detect";
+export const DEFAULT_DOMAIN = "Auto Detect";
+export const DEFAULT_CATEGORY = "Auto Detect";
 
 export const TEST_TYPES = [
   DEFAULT_TEST_TYPE,
@@ -12,6 +14,219 @@ export const TEST_TYPES = [
   "Understanding OC Thinking Skills",
   "Understanding Selective Thinking Skills",
   "Math / Problem Solving for Selective",
+];
+
+export const DOMAIN_OPTIONS = [
+  DEFAULT_DOMAIN,
+  "Critical Reasoning",
+  "Logical Reasoning",
+  "Numerical Reasoning",
+  "Data / Table / Graph Reasoning",
+  "Abstract / Pattern Reasoning",
+  "Spatial Reasoning",
+];
+
+const CATEGORY_DEFINITIONS = [
+  {
+    domain: "Critical Reasoning",
+    category: "Main Conclusion & Support",
+    keywords: ["main conclusion", "main point", "reason", "support", "conclusion"],
+    strategy: "Separate the claim being proved from the reasons offered for it.",
+    mistakes: "Selecting background information or an intermediate claim as the conclusion.",
+    subskills: [
+      "Identify the main conclusion",
+      "Identify supporting reasons",
+      "Distinguish evidence from background",
+      "Find an intermediate conclusion",
+    ],
+  },
+  {
+    domain: "Critical Reasoning",
+    category: "Strengthen / Best Support",
+    keywords: ["strengthen", "best support", "most supports", "more likely"],
+    strategy: "Find the conclusion, locate its weakest link, and choose the option that most directly makes the conclusion more likely.",
+    mistakes: "Choosing a topic-related statement, repeating existing evidence, or confirming the problem without supporting the proposed conclusion.",
+    subskills: [
+      "Strengthen with new evidence",
+      "Choose the best support",
+      "Close a reasoning gap",
+      "Distinguish direct from indirect support",
+    ],
+  },
+  {
+    domain: "Critical Reasoning",
+    category: "Weaken / Assumptions",
+    keywords: ["weaken", "assumption", "depends on", "required", "undermine"],
+    strategy: "Identify the hidden bridge between evidence and conclusion, then test which option attacks or is required by that bridge.",
+    mistakes: "Choosing an irrelevant negative fact or something helpful but not necessary.",
+    subskills: [
+      "Weaken an argument",
+      "Identify a hidden assumption",
+      "Apply the assumption negation test",
+      "Find a counterexample",
+    ],
+  },
+  {
+    domain: "Critical Reasoning",
+    category: "Evaluate Evidence & Flaws",
+    keywords: ["flaw", "mistake", "evaluate", "reasoning correct", "evidence", "cannot conclude"],
+    strategy: "Check the exact inference being made and ask whether the evidence rules out realistic alternatives.",
+    mistakes: "Judging the topic or speaker instead of the logical link, or treating possible evidence as proof.",
+    subskills: [
+      "Evaluate evidence quality",
+      "Identify an unsupported conclusion",
+      "Detect correlation versus causation",
+      "Detect overgeneralisation or ignored alternatives",
+    ],
+  },
+  {
+    domain: "Critical Reasoning",
+    category: "Matching Arguments",
+    keywords: ["same reasoning", "matching argument", "same structure", "parallel"],
+    strategy: "Replace topic words with symbols and match the role and direction of every statement.",
+    mistakes: "Matching vocabulary or subject matter while overlooking a different logical structure.",
+    subskills: [
+      "Abstract an argument structure",
+      "Match conditional arguments",
+      "Match causal arguments",
+      "Distinguish similar topics from similar logic",
+    ],
+  },
+  {
+    domain: "Logical Reasoning",
+    category: "Conditional Logic",
+    keywords: ["if", "only if", "unless", "whenever", "condition", "requires"],
+    strategy: "Write each rule in one direction, mark necessary and sufficient conditions, and use only valid chains or contrapositives.",
+    mistakes: "Reversing a conditional, denying the antecedent, or misreading 'only if'.",
+    subskills: [
+      "Interpret if-then statements",
+      "Interpret only-if and unless",
+      "Use the contrapositive",
+      "Build a conditional chain",
+    ],
+  },
+  {
+    domain: "Logical Reasoning",
+    category: "Must / Cannot / Possibility",
+    keywords: ["must be true", "cannot be true", "could be true", "possible", "impossible"],
+    strategy: "For must claims test every allowed case; for could claims find one valid case; for cannot claims show contradiction.",
+    mistakes: "Treating a likely or possible result as guaranteed.",
+    subskills: [
+      "Prove what must be true",
+      "Find what cannot be true",
+      "Construct a possible case",
+      "Recognise insufficient information",
+    ],
+  },
+  {
+    domain: "Logical Reasoning",
+    category: "Set & Quantifier Logic",
+    keywords: ["all", "some", "none", "everyone", "no one", "venn", "overlap", "subset"],
+    strategy: "Translate all, some, and none into set relationships without reversing subset direction or inventing members.",
+    mistakes: "Confusing some with all, reversing a subset, or assuming two groups overlap.",
+    subskills: [
+      "Reason with all, some, and none",
+      "Use subset and exclusion rules",
+      "Reason about set overlap",
+      "Count overlapping groups",
+    ],
+  },
+  {
+    domain: "Logical Reasoning",
+    category: "Arrangement & Constraints",
+    keywords: ["arrange", "seated", "row", "order", "ranking", "schedule", "next to", "between"],
+    strategy: "List hard constraints, place fixed facts first, then build and test the smallest complete arrangement.",
+    mistakes: "Assuming adjacency, overlooking circular rotation, or stopping after only one arrangement.",
+    subskills: [
+      "Order and rank items",
+      "Solve row or circular seating",
+      "Schedule under constraints",
+      "Match people, objects, or locations",
+    ],
+  },
+  {
+    domain: "Logical Reasoning",
+    category: "Truth, Lies & Rule Systems",
+    keywords: ["truth", "lie", "statement", "exactly one", "at least one", "rule"],
+    strategy: "Translate the truth-count rule precisely and test complete cases for consistency.",
+    mistakes: "Confusing one with only one, or checking statements separately without checking the whole case.",
+    subskills: [
+      "Solve truth-and-lie statements",
+      "Apply exactly-one and at-least-one rules",
+      "Test consistency of rule systems",
+      "Eliminate cases by contradiction",
+    ],
+  },
+  {
+    domain: "Numerical Reasoning",
+    category: "Numerical Operations",
+    keywords: ["ratio", "average", "percent", "total", "count", "money", "cost"],
+    strategy: "Identify the requested quantity, organise values with units, calculate in short steps, and estimate-check the result.",
+    mistakes: "Using the wrong base, averaging averages, losing units, or double-counting.",
+    subskills: [
+      "Solve ratios and proportions",
+      "Calculate percentages and change",
+      "Calculate averages and totals",
+      "Count cases without duplication",
+    ],
+  },
+  {
+    domain: "Numerical Reasoning",
+    category: "Rate, Time & Optimisation",
+    keywords: ["speed", "rate", "time", "latest", "earliest", "cheapest", "maximum", "minimum"],
+    strategy: "Build a timeline or cost table, include waiting and transition time, then compare complete feasible options.",
+    mistakes: "Ignoring waiting time, comparing partial totals, or optimising the wrong quantity.",
+    subskills: [
+      "Solve rate and speed problems",
+      "Reason with timetables",
+      "Find earliest or latest times",
+      "Find maximum, minimum, or cheapest solutions",
+    ],
+  },
+  {
+    domain: "Data / Table / Graph Reasoning",
+    category: "Tables, Charts & Data",
+    keywords: ["table", "chart", "graph", "axis", "data", "survey", "trend"],
+    strategy: "Read titles, labels, units, scales, and legends before extracting only the values needed for the comparison.",
+    mistakes: "Using the wrong row, scale, denominator, unit, or confusing a trend with an exact value.",
+    subskills: [
+      "Look up and compare table values",
+      "Interpret charts and graph scales",
+      "Infer trends from data",
+      "Determine what data must imply",
+    ],
+  },
+  {
+    domain: "Abstract / Pattern Reasoning",
+    category: "Patterns & Sequences",
+    keywords: ["pattern", "sequence", "next", "symbol", "matrix", "odd one out"],
+    strategy: "Compare one changing feature at a time, test the simplest consistent rule, and verify it across every position.",
+    mistakes: "Using a rule that fits only one transition or changing multiple unexplained features.",
+    subskills: [
+      "Continue a number pattern",
+      "Continue a symbol or shape sequence",
+      "Solve a matrix pattern",
+      "Find the odd one out by rule",
+    ],
+  },
+  {
+    domain: "Spatial Reasoning",
+    category: "Spatial Transformations",
+    keywords: ["cube", "net", "fold", "rotate", "reflect", "view", "shape", "diagram"],
+    strategy: "Track invariant features, adjacency, orientation, and permitted rotations or reflections step by step.",
+    mistakes: "Confusing rotation with reflection, inventing hidden faces, or claiming certainty without the diagram.",
+    subskills: [
+      "Fold or unfold cube nets",
+      "Visualise 2D and 3D views",
+      "Track rotations and reflections",
+      "Reason from diagram-dependent spatial rules",
+    ],
+  },
+];
+
+export const CATEGORY_OPTIONS = [
+  DEFAULT_CATEGORY,
+  ...CATEGORY_DEFINITIONS.map((item) => item.category),
 ];
 
 export const QUESTION_TYPES = [
@@ -31,146 +246,108 @@ export const QUESTION_TYPES = [
   "General Problem Solving",
 ];
 
-const SHARED_RULES = `
-Accuracy rules:
-- Use only facts stated in the pasted question. Do not silently add adjacency, exclusivity,
-  equal scoring, or "only" conditions.
-- Treat "if A then B" as A -> B. Its valid contrapositive is not-B -> not-A.
-  Do not reverse it to B -> A and do not assume not-A -> not-B.
-- Distinguish must be true, could be true, cannot be true, and not enough information.
-- If wording permits more than one answer, say the item appears ambiguous, lower confidence,
-  and explain the competing interpretations instead of inventing a restriction.
-- Check every option independently before selecting the best answer.
-- Similar practice questions must be newly written and must have exactly one defensible answer.
-`;
-
-const PROFILES = {
-  "Identifying Strengths": {
-    strategy:
-      "Find the main conclusion and its supporting reasons. Test each option by asking whether it makes the conclusion more likely or closes an important gap. Prefer an additional direct benefit over a fact that merely shows the problem still exists.",
-    mistakes:
-      "Choosing a merely related statement, repeating an existing reason, supporting background detail instead of the conclusion, or selecting evidence of poor performance that does not show the proposed activity will help.",
-    explanation:
-      "State the conclusion first, identify the reasoning gap, then compare how directly each option adds support. Calibration: if an argument says a student should continue drawing, evidence that creative skills benefit the student's future engineering goal directly strengthens it; a report saying the student is not studying hard enough does not show that drawing helps and may instead create a reason to stop.",
-  },
-  "Identifying Weaknesses": {
-    strategy:
-      "Find the conclusion and the assumption connecting the evidence to it. Prefer the option that most directly challenges that assumption or supplies a credible counterexample.",
-    mistakes:
-      "Choosing an unpleasant fact that does not affect the inference, attacking the topic rather than the reasoning, or selecting a weakly related exception.",
-    explanation:
-      "Name the assumption being challenged and describe exactly how the option makes the conclusion less secure.",
-  },
-  "Evaluating Reasoning": {
-    strategy:
-      "Translate each person's claim into explicit logical steps. Check whether each conclusion follows in every case allowed by the information.",
-    mistakes:
-      "Treating a possible result as guaranteed, assuming equal marks or hidden rules, and accepting a conclusion because it sounds reasonable.",
-    explanation:
-      "Evaluate each speaker separately, identify the valid or invalid inference, and use elimination only after the logic is checked.",
-  },
-  "Identifying Mistakes / Flaws": {
-    strategy:
-      "Locate the exact step where the conclusion stops following from the evidence. Check for reversed conditionals, unsupported assumptions, overlap errors, and confusion between possibility and certainty.",
-    mistakes:
-      "Pointing to a false-looking sentence that is not the reasoning error, or describing the topic rather than the logical flaw.",
-    explanation:
-      "Quote or paraphrase the faulty move, name the flaw in plain language, and show a counterexample when helpful.",
-  },
-  "Matching Arguments": {
-    strategy:
-      "Replace topic words with symbols and compare the role of each statement: condition, evidence, intermediate conclusion, and final conclusion.",
-    mistakes:
-      "Matching vocabulary or subject matter while ignoring a different logical structure or direction of implication.",
-    explanation:
-      "Display the abstract pattern of the original and each plausible match, then identify the structurally equivalent option.",
-  },
-  "Conditional Logic / Must Be True": {
-    strategy:
-      "Write each condition in one direction, link valid chains, use contrapositives carefully, and test must/cannot claims against all permitted cases.",
-    mistakes:
-      "Affirming the consequent, denying the antecedent, treating 'only if' backwards, or confusing a sufficient condition with a necessary one.",
-    explanation:
-      "Show the symbolic chain in student-friendly words and explain why alternatives are possible, impossible, or unsupported.",
-  },
-  Assumptions: {
-    strategy:
-      "Identify the unstated bridge required between the reasons and conclusion. Use the negation test: if denying an option seriously damages the argument, it is likely required.",
-    mistakes:
-      "Choosing something helpful but not necessary, selecting a restatement, or adding a stronger claim than the argument needs.",
-    explanation:
-      "State the gap, apply the negation test to the best option, and explain why other options are unnecessary.",
-  },
-  "Venn / Set Logic": {
-    strategy:
-      "Represent 'all' as a subset, 'no' as separated sets, and 'some' as at least one member. Do not assume a group exists unless the wording establishes it.",
-    mistakes:
-      "Reversing subset direction, assuming overlap from separate 'some' claims, or converting 'all A are B' into 'all B are A'.",
-    explanation:
-      "Describe the set relationships, place any known individual, and test each option against a possible diagram.",
-  },
-  "Tables / Charts / Graphs": {
-    strategy:
-      "Read titles, units, legends, axes, and row/column labels first. Extract only the needed values, calculate with units, and verify against the visual scale.",
-    mistakes:
-      "Using the wrong row or unit, confusing totals with rates, estimating when exact values are available, or overlooking a changing scale.",
-    explanation:
-      "List the key values, show the operation, include units, and note when missing image details prevent a reliable answer.",
-  },
-  "Numerical Problem Solving": {
-    strategy:
-      "Identify the target quantity, organize the known values, choose the shortest valid calculation, keep units consistent, and estimate to catch unreasonable answers.",
-    mistakes:
-      "Applying a percentage to the wrong base, averaging averages incorrectly, ignoring waiting/travel time, double-counting, or optimizing only one part of a total.",
-    explanation:
-      "Show compact numbered calculations and verify the result by substitution, estimation, or comparison.",
-  },
-  "Arrangement / Constraint Logic": {
-    strategy:
-      "List hard constraints, place fixed or most restrictive facts first, build a small table or sequence, and test options without assuming unstated adjacency.",
-    mistakes:
-      "Treating 'to the right of' as immediately right, forgetting rotations in circular arrangements, or failing to explore a second valid arrangement.",
-    explanation:
-      "Show the deductions in order and provide a valid arrangement or contradiction for each important option.",
-  },
-  "Visual / Spatial Reasoning": {
-    strategy:
-      "Describe invariant features such as adjacency, orientation, face relationships, counts, and allowed rotations/reflections. Use only diagram details included in text.",
-    mistakes:
-      "Confusing rotation with reflection, assuming hidden faces, or claiming certainty when the diagram is unavailable.",
-    explanation:
-      "Explain the visual transformation in words. If the image is absent or incomplete, lower confidence and clearly require manual checking.",
-  },
-  "General Problem Solving": {
-    strategy:
-      "Classify the task, separate relevant from irrelevant facts, model the constraints or calculation, and test each answer against the original question.",
-    mistakes:
-      "Starting calculations before identifying the target, adding unstated assumptions, or stopping after finding an option that merely seems plausible.",
-    explanation:
-      "State the model, solve in small verifiable steps, and finish with a direct option comparison.",
-  },
+const LEGACY_CATEGORY_MAP = {
+  "Identifying Strengths": "Strengthen / Best Support",
+  "Identifying Weaknesses": "Weaken / Assumptions",
+  "Evaluating Reasoning": "Evaluate Evidence & Flaws",
+  "Identifying Mistakes / Flaws": "Evaluate Evidence & Flaws",
+  "Matching Arguments": "Matching Arguments",
+  "Conditional Logic / Must Be True": "Conditional Logic",
+  Assumptions: "Weaken / Assumptions",
+  "Venn / Set Logic": "Set & Quantifier Logic",
+  "Tables / Charts / Graphs": "Tables, Charts & Data",
+  "Numerical Problem Solving": "Numerical Operations",
+  "Arrangement / Constraint Logic": "Arrangement & Constraints",
+  "Visual / Spatial Reasoning": "Spatial Transformations",
 };
 
-const AUTO_DETECTION_GUIDE = `
-Detect the closest category from this exact list:
-Identifying Strengths; Identifying Weaknesses; Evaluating Reasoning;
-Identifying Mistakes / Flaws; Matching Arguments; Conditional Logic / Must Be True;
-Assumptions; Venn / Set Logic; Tables / Charts / Graphs; Numerical Problem Solving;
-Arrangement / Constraint Logic; Visual / Spatial Reasoning; General Problem Solving.
-Use the question's required reasoning operation, not just its topic.
+const FEEDBACK_STYLE =
+  "Name the student's exact reasoning move, explain why it fails or succeeds, and give one action they can use on the next question.";
+
+export const TUTOR_PROFILES = CATEGORY_DEFINITIONS.flatMap((definition) =>
+  definition.subskills.map((subskillName, index) => ({
+    id: `${definition.domain.toLowerCase().replace(/[^a-z]+/g, "-")}-${definition.category.toLowerCase().replace(/[^a-z]+/g, "-")}-${index + 1}`,
+    domain: definition.domain,
+    category: definition.category,
+    subskillName,
+    whatItTests: `The student's ability to ${subskillName.toLowerCase()} accurately and efficiently.`,
+    solvingStrategy: definition.strategy,
+    commonMistakes: definition.mistakes,
+    feedbackStyle: FEEDBACK_STYLE,
+    practiceGenerationRule: `Create a new age-appropriate ${definition.category.toLowerCase()} MCQ focused on ${subskillName.toLowerCase()}, with one unambiguous answer and plausible distractors representing common mistakes.`,
+    keywords: definition.keywords,
+  }))
+);
+
+const SHARED_RULES = `
+Accuracy rules:
+- Use only facts stated in the question. Never add adjacency, exclusivity, equal scoring,
+  existence, or "only" conditions that were not given.
+- Treat "if A then B" as A -> B. The valid contrapositive is not-B -> not-A.
+- Distinguish must, could, cannot, likely, and not enough information.
+- If more than one answer is defensible, flag ambiguity and lower confidence.
+- Explain every option and identify the misconception represented by a distractor.
+- Generate only original practice questions with exactly one defensible answer.
+- Teach in this order: short strategy, worked steps, option comparison, reflection, next task.
 `;
 
-export function getTutorGuidance(questionType) {
-  if (questionType === DEFAULT_QUESTION_TYPE || !PROFILES[questionType]) {
-    return `${AUTO_DETECTION_GUIDE}\n${SHARED_RULES}`;
-  }
+function scoreProfile(profile, normalizedText) {
+  return profile.keywords.reduce(
+    (score, keyword) => score + (normalizedText.includes(keyword) ? 2 : 0),
+    0
+  );
+}
 
-  const profile = PROFILES[questionType];
+export function getTutorGuidance({
+  inputText,
+  domain = DEFAULT_DOMAIN,
+  category = DEFAULT_CATEGORY,
+  questionType = DEFAULT_QUESTION_TYPE,
+}) {
+  const legacyCategory = LEGACY_CATEGORY_MAP[questionType];
+  const requestedCategory =
+    category !== DEFAULT_CATEGORY ? category : legacyCategory;
+
+  let candidates = TUTOR_PROFILES.filter((profile) => {
+    const domainMatches = domain === DEFAULT_DOMAIN || profile.domain === domain;
+    const categoryMatches =
+      !requestedCategory || profile.category === requestedCategory;
+    return domainMatches && categoryMatches;
+  });
+
+  if (!candidates.length) candidates = TUTOR_PROFILES;
+
+  const normalizedText = String(inputText || "").toLowerCase();
+  candidates = candidates
+    .map((profile) => ({
+      profile,
+      score: scoreProfile(profile, normalizedText),
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, requestedCategory ? 4 : 8)
+    .map(({ profile }) => profile);
+
+  const candidateText = candidates
+    .map(
+      (profile) => `
+- Domain: ${profile.domain}
+  Category: ${profile.category}
+  Subskill: ${profile.subskillName}
+  What it tests: ${profile.whatItTests}
+  Strategy: ${profile.solvingStrategy}
+  Common mistakes: ${profile.commonMistakes}
+  Feedback style: ${profile.feedbackStyle}
+  Practice rule: ${profile.practiceGenerationRule}`
+    )
+    .join("\n");
+
   return `
-Selected question type: ${questionType}
-Strategy: ${profile.strategy}
-Common mistakes: ${profile.mistakes}
-Explanation pattern: ${profile.explanation}
+Classify the question by its reasoning operation, not merely its topic.
+Choose the closest domain, category, and subskill from these candidate tutor profiles:
+${candidateText}
+
+If none is a perfect fit, choose the closest category and describe a precise subskill
+using the same non-proprietary taxonomy style.
 ${SHARED_RULES}
 `;
 }

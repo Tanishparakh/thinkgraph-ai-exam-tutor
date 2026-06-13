@@ -28,6 +28,35 @@ export const QUESTION_TYPES = [
   "General Problem Solving",
 ];
 
+export const DOMAIN_OPTIONS = [
+  "Auto Detect",
+  "Critical Reasoning",
+  "Logical Reasoning",
+  "Numerical Reasoning",
+  "Data / Table / Graph Reasoning",
+  "Abstract / Pattern Reasoning",
+  "Spatial Reasoning",
+];
+
+export const CATEGORY_OPTIONS = [
+  "Auto Detect",
+  "Main Conclusion & Support",
+  "Strengthen / Best Support",
+  "Weaken / Assumptions",
+  "Evaluate Evidence & Flaws",
+  "Matching Arguments",
+  "Conditional Logic",
+  "Must / Cannot / Possibility",
+  "Set & Quantifier Logic",
+  "Arrangement & Constraints",
+  "Truth, Lies & Rule Systems",
+  "Numerical Operations",
+  "Rate, Time & Optimisation",
+  "Tables, Charts & Data",
+  "Patterns & Sequences",
+  "Spatial Transformations",
+];
+
 export const STUDENT_ANSWERS = [
   { value: "", label: "Not selected" },
   { value: "A", label: "A" },

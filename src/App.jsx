@@ -4,7 +4,10 @@ import AnalysisPanel from "./components/AnalysisPanel";
 import ExamSolverPanel from "./components/ExamSolverPanel";
 import LogicGraph from "./components/LogicGraph";
 import ModeSelector from "./components/ModeSelector";
+import ProgressDashboard from "./components/ProgressDashboard";
 import {
+  CATEGORY_OPTIONS,
+  DOMAIN_OPTIONS,
   QUESTION_TYPES,
   STUDENT_ANSWERS,
   TEST_TYPES,
@@ -13,6 +16,11 @@ import {
   analyzeArgument,
   solveExamQuestion,
 } from "./services/geminiService";
+import {
+  clearProgress,
+  loadProgress,
+  recordAttempt,
+} from "./services/progressService";
 
 const LOGIC_SAMPLE =
   "If a person is a doctor, then they studied medicine. Priya studied medicine. Therefore, Priya is a doctor.";
@@ -37,10 +45,14 @@ function App() {
   const [examText, setExamText] = useState("");
   const [testType, setTestType] = useState(TEST_TYPES[0]);
   const [questionType, setQuestionType] = useState(QUESTION_TYPES[0]);
+  const [domain, setDomain] = useState(DOMAIN_OPTIONS[0]);
+  const [category, setCategory] = useState(CATEGORY_OPTIONS[0]);
   const [studentAnswer, setStudentAnswer] = useState("");
   const [examResult, setExamResult] = useState(null);
   const [examError, setExamError] = useState("");
   const [examLoading, setExamLoading] = useState(false);
+  const [questionStartedAt, setQuestionStartedAt] = useState(0);
+  const [progress, setProgress] = useState(() => loadProgress());
 
   const isLoading = logicLoading || examLoading;
 
@@ -52,9 +64,12 @@ function App() {
 
   function loadExamSample() {
     setExamText(EXAM_SAMPLE);
-    setQuestionType("Identifying Strengths");
+    setQuestionType(QUESTION_TYPES[0]);
+    setDomain(DOMAIN_OPTIONS[0]);
+    setCategory(CATEGORY_OPTIONS[0]);
     setExamError("");
     setExamResult(null);
+    setQuestionStartedAt(Date.now());
   }
 
   async function analyzeLogic() {
@@ -75,18 +90,35 @@ function App() {
     setExamResult(null);
     try {
       setExamLoading(true);
-      setExamResult(
-        await solveExamQuestion({
+      const result = await solveExamQuestion({
           inputText: examText,
           testType,
           questionType,
           studentAnswer,
-        })
-      );
+          domain,
+          category,
+        });
+      setExamResult(result);
+      const elapsedSeconds = questionStartedAt
+        ? Math.round((Date.now() - questionStartedAt) / 1000)
+        : 0;
+      setProgress((current) => recordAttempt(current, result, elapsedSeconds));
+      setQuestionStartedAt(Date.now());
     } catch (error) {
       setExamError(error.message);
     } finally {
       setExamLoading(false);
+    }
+  }
+
+  function changeExamText(value) {
+    if (!examText && value) setQuestionStartedAt(Date.now());
+    setExamText(value);
+  }
+
+  function resetProgress() {
+    if (window.confirm("Reset all locally stored Exam Tutor progress?")) {
+      setProgress(clearProgress());
     }
   }
 
@@ -206,7 +238,7 @@ function App() {
                 <span className="card-tag">Tutor Setup</span>
               </div>
 
-              <div className="form-grid">
+              <div className="form-grid simple-form-grid">
                 <label>
                   <span>Test Type</span>
                   <select
@@ -215,18 +247,6 @@ function App() {
                     disabled={examLoading}
                   >
                     {TEST_TYPES.map((item) => (
-                      <option key={item}>{item}</option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  <span>Question Type</span>
-                  <select
-                    value={questionType}
-                    onChange={(event) => setQuestionType(event.target.value)}
-                    disabled={examLoading}
-                  >
-                    {QUESTION_TYPES.map((item) => (
                       <option key={item}>{item}</option>
                     ))}
                   </select>
@@ -247,6 +267,51 @@ function App() {
                 </label>
               </div>
 
+              <details className="advanced-settings">
+                <summary>Advanced classification settings (optional)</summary>
+                <p>
+                  Leave these on Auto Detect unless you want to guide the tutor.
+                </p>
+                <div className="form-grid">
+                  <label>
+                    <span>Question Type Hint</span>
+                    <select
+                      value={questionType}
+                      onChange={(event) => setQuestionType(event.target.value)}
+                      disabled={examLoading}
+                    >
+                      {QUESTION_TYPES.map((item) => (
+                        <option key={item}>{item}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <span>Domain Override</span>
+                    <select
+                      value={domain}
+                      onChange={(event) => setDomain(event.target.value)}
+                      disabled={examLoading}
+                    >
+                      {DOMAIN_OPTIONS.map((item) => (
+                        <option key={item}>{item}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <span>Category Override</span>
+                    <select
+                      value={category}
+                      onChange={(event) => setCategory(event.target.value)}
+                      disabled={examLoading}
+                    >
+                      {CATEGORY_OPTIONS.map((item) => (
+                        <option key={item}>{item}</option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              </details>
+
               <label className="question-label" htmlFor="exam-question">
                 Question and options
               </label>
@@ -254,7 +319,7 @@ function App() {
                 id="exam-question"
                 className="exam-textarea"
                 value={examText}
-                onChange={(event) => setExamText(event.target.value)}
+                onChange={(event) => changeExamText(event.target.value)}
                 placeholder={"Paste the full question here...\n\nA. First option\nB. Second option\nC. Third option\nD. Fourth option"}
               />
               <div className="textarea-footer">
@@ -308,6 +373,8 @@ function App() {
                 <ExamSolverPanel result={examResult} />
               )}
             </section>
+
+            <ProgressDashboard progress={progress} onReset={resetProgress} />
           </div>
         )}
       </main>

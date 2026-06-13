@@ -36,18 +36,28 @@ function ExamSolverPanel({ result }) {
 
       <div className="result-meta">
         <div>
-          <span>Question Type</span>
-          <strong>{result.detected_question_type}</strong>
+          <span>Domain</span>
+          <strong>{result.domain}</strong>
+        </div>
+        <div>
+          <span>Category</span>
+          <strong>{result.category}</strong>
+        </div>
+        <div>
+          <span>Detected Subskill</span>
+          <strong>{result.detected_subskill}</strong>
         </div>
         <div>
           <span>Test Type</span>
           <strong>{result.test_type}</strong>
         </div>
-        <div>
-          <span>Skill Tested</span>
-          <strong>{result.skill_tested}</strong>
-        </div>
       </div>
+
+      <section className="strategy-card">
+        <span className="strategy-label">Method to Learn</span>
+        <h3>Teaching Strategy</h3>
+        <p>{result.teaching_strategy}</p>
+      </section>
 
       <section className="result-section">
         <h3>Main Point / Rule</h3>
@@ -93,16 +103,19 @@ function ExamSolverPanel({ result }) {
             {result.student_feedback.likely_mistake}
           </p>
         )}
+        <p>
+          <strong>Mistake pattern:</strong> {result.mistake_type}
+        </p>
       </section>
 
       <div className="tips-grid">
-        <section className="tip-card teaching">
-          <h3>Teaching Tip</h3>
-          <p>{result.teaching_tip}</p>
-        </section>
         <section className="tip-card improvement">
           <h3>Score Improvement Tip</h3>
           <p>{result.score_improvement_tip}</p>
+        </section>
+        <section className="tip-card next-practice">
+          <h3>What to Practise Next</h3>
+          <p>{result.next_practice_recommendation}</p>
         </section>
       </div>
 

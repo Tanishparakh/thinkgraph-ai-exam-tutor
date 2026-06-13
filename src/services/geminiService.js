@@ -46,6 +46,8 @@ export function solveExamQuestion({
   testType,
   questionType,
   studentAnswer,
+  domain,
+  category,
 }) {
   return analyze({
     mode: "exam",
@@ -53,5 +55,7 @@ export function solveExamQuestion({
     testType,
     questionType,
     studentAnswer,
+    domain,
+    category,
   });
 }

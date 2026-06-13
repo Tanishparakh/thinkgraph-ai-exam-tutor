@@ -8,6 +8,15 @@ ThinkGraph AI is a two-mode AI education tool:
   every option, gives personalised feedback, suggests score improvements, and
   generates an original practice question.
 
+Exam Tutor Mode uses an internal 60-subskill taxonomy across Critical, Logical,
+Numerical, Data, Abstract, and Spatial Reasoning. Auto Detect is the default;
+optional advanced settings can guide domain or category classification.
+
+Student progress is stored only in the current browser using `localStorage`.
+It includes attempts, accuracy, average time, category performance, common
+mistake patterns, and the recommended next practice focus. No account or
+database is required.
+
 ## Requirements
 
 - Node.js 20 or newer
@@ -61,3 +70,6 @@ The Gemini key is read only by `api/analyze.js`. Do not create a
 The tutor guide contains generalized solving strategies and original-example
 guidance. Source books, scanned PDFs, answer sheets, and copied exam questions are
 not included in the repository or deployment.
+
+The public-platform and evidence review behind the tutor design is documented in
+`docs/TUTOR_PLATFORM_RESEARCH.md`.

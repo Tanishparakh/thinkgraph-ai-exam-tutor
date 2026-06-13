@@ -1,8 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 import process from "node:process";
 import {
+  CATEGORY_OPTIONS,
+  DEFAULT_CATEGORY,
+  DEFAULT_DOMAIN,
   DEFAULT_QUESTION_TYPE,
   DEFAULT_TEST_TYPE,
+  DOMAIN_OPTIONS,
   QUESTION_TYPES,
   TEST_TYPES,
   getTutorGuidance,
@@ -103,26 +107,33 @@ const examSchema = {
   type: "object",
   required: [
     "test_type",
-    "detected_question_type",
+    "domain",
+    "category",
+    "detected_subskill",
     "skill_tested",
     "correct_answer",
     "confidence",
     "main_point_or_rule",
+    "teaching_strategy",
     "step_by_step_solution",
     "option_analysis",
     "student_feedback",
-    "teaching_tip",
+    "mistake_type",
     "score_improvement_tip",
+    "next_practice_recommendation",
     "visual_reasoning_note",
     "similar_practice_question",
   ],
   properties: {
     test_type: { type: "string" },
-    detected_question_type: { type: "string" },
+    domain: { type: "string" },
+    category: { type: "string" },
+    detected_subskill: { type: "string" },
     skill_tested: { type: "string" },
     correct_answer: { type: "string", enum: ["A", "B", "C", "D"] },
     confidence: { type: "number" },
     main_point_or_rule: { type: "string" },
+    teaching_strategy: { type: "string" },
     step_by_step_solution: { type: "array", items: { type: "string" } },
     option_analysis: {
       type: "array",
@@ -148,8 +159,9 @@ const examSchema = {
         likely_mistake: { type: "string" },
       },
     },
-    teaching_tip: { type: "string" },
+    mistake_type: { type: "string" },
     score_improvement_tip: { type: "string" },
+    next_practice_recommendation: { type: "string" },
     visual_reasoning_note: { type: "string" },
     similar_practice_question: {
       type: "object",
@@ -203,7 +215,9 @@ export function buildExamTutorPrompt(
   inputText,
   testType,
   questionType,
-  studentAnswer
+  studentAnswer,
+  domain,
+  category
 ) {
   const answerInstruction = VALID_ANSWERS.has(studentAnswer)
     ? `The student selected ${studentAnswer}. Give personalized feedback and compare it with the correct answer.`
@@ -216,17 +230,20 @@ Opportunity Class, Cambridge-style Thinking Skills, and verbal-reasoning exams.
 Context:
 - Selected test type: ${testType}
 - Selected question type: ${questionType}
+- Domain override: ${domain}
+- Category override: ${category}
 - ${answerInstruction}
 
 Tutor guidance:
-${getTutorGuidance(questionType)}
+${getTutorGuidance({ inputText, domain, category, questionType })}
 
 Your task:
 - Solve the complete multiple-choice question.
-- If Auto Detect is selected, detect the closest supported question category.
-- Explain the concept and show concise, numbered, student-friendly steps.
+- Detect the closest domain, category, and precise subskill unless an override is given.
+- Start with a short reusable teaching strategy, then show concise numbered steps.
 - Explain why the correct option is correct and every other option is wrong.
-- Give a teaching tip, a practical score-improvement tip, and personalized feedback.
+- Diagnose the student's mistake as a concise reusable mistake type.
+- Give a practical score-improvement tip and a specific next-practice recommendation.
 - Generate one new, self-contained practice question with A-D options, one correct
   answer, and an explanation. Do not reproduce or closely imitate published questions.
 - If an image, diagram, chart, cube, shape, or spatial layout is needed but not fully
@@ -294,12 +311,16 @@ function validateLogicData(data) {
 function validateExamData(data, testType, studentAnswer) {
   if (!data || typeof data !== "object") throw new Error("Invalid exam response");
   const stringFields = [
-    "detected_question_type",
+    "domain",
+    "category",
+    "detected_subskill",
     "skill_tested",
     "correct_answer",
     "main_point_or_rule",
-    "teaching_tip",
+    "teaching_strategy",
+    "mistake_type",
     "score_improvement_tip",
+    "next_practice_recommendation",
     "visual_reasoning_note",
   ];
   if (stringFields.some((field) => typeof data[field] !== "string")) {
@@ -359,6 +380,7 @@ function validateExamData(data, testType, studentAnswer) {
     data.student_feedback.message =
       "Choose an option next time to receive personalised feedback on your reasoning.";
     data.student_feedback.likely_mistake = "";
+    data.mistake_type = "Not assessed";
   }
 
   return data;
@@ -415,6 +437,16 @@ export default async function handler(request, response) {
     QUESTION_TYPES,
     DEFAULT_QUESTION_TYPE
   );
+  const domain = normalizeSelection(
+    body.domain,
+    DOMAIN_OPTIONS,
+    DEFAULT_DOMAIN
+  );
+  const category = normalizeSelection(
+    body.category,
+    CATEGORY_OPTIONS,
+    DEFAULT_CATEGORY
+  );
   const studentAnswer = String(body.studentAnswer || "").trim().toUpperCase();
 
   try {
@@ -422,7 +454,14 @@ export default async function handler(request, response) {
     if (mode === "exam") {
       const data = await generateJson(
         ai,
-        buildExamTutorPrompt(inputText, testType, questionType, studentAnswer),
+        buildExamTutorPrompt(
+          inputText,
+          testType,
+          questionType,
+          studentAnswer,
+          domain,
+          category
+        ),
         examSchema
       );
       return response
